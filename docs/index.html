@@ -57,6 +57,7 @@
     text-align: center;
     gap: 1rem;
     box-shadow: var(--card-shadow);
+    overflow: hidden;
   }
   .label {
     color: var(--muted);
@@ -74,20 +75,25 @@
   .progress-row {
     display: flex;
     align-items: center;
-    gap: 0.9rem;
+    gap: clamp(0.4rem, 2vw, 0.9rem);
+    max-width: 100%;
   }
   .percentage {
-    font-size: 3.75rem;
+    font-size: clamp(2.1rem, 9vw, 3.75rem);
     font-weight: 700;
     line-height: 1;
     letter-spacing: -0.02em;
     font-variant-numeric: tabular-nums;
+    flex-shrink: 0;
   }
   .bar-text {
     font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
     color: var(--muted);
-    font-size: 1rem;
+    font-size: clamp(0.5rem, 2.4vw, 1rem);
     letter-spacing: 0.02em;
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
   }
   .bottom-link {
     position: fixed;
