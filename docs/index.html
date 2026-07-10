@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Year Progress</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='13' fill='none' stroke='black' stroke-width='2.5'/><line x1='16' y1='16' x2='16' y2='7' stroke='black' stroke-width='2.5' stroke-linecap='round'/><line x1='16' y1='16' x2='22' y2='16' stroke='black' stroke-width='2.5' stroke-linecap='round'/></svg>">
+<style>
+  :root {
+    color-scheme: dark light;
+    --bg: #0b0b0d;
+    --fg: #f2f2f3;
+    --muted: #8a8a90;
+    --card-bg: #18181c;
+    --dot: #232327;
+    --card-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg: #fafafa;
+      --fg: #16161a;
+      --muted: #6b6b70;
+      --card-bg: #eaeaec;
+      --dot: #dcdce0;
+      --card-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+  }
+  body {
+    background-color: var(--bg);
+    background-image: radial-gradient(circle, var(--dot) 1.5px, transparent 1.5px);
+    background-size: 1cm 1cm;
+    color: var(--fg);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+  .card {
+    position: relative;
+    z-index: 1;
+    width: min(85vw, 480px);
+    aspect-ratio: 18 / 9;
+    background: var(--card-bg);
+    border-radius: 28px;
+    padding: 1.5rem 2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    gap: 1rem;
+    box-shadow: var(--card-shadow);
+  }
+  .label {
+    color: var(--muted);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+  }
+  .datetime {
+    font-size: 0.8rem;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.02em;
+  }
+  .progress-row {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+  }
+  .percentage {
+    font-size: 3.75rem;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+  }
+  .bar-text {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    color: var(--muted);
+    font-size: 1rem;
+    letter-spacing: 0.02em;
+  }
+  .bottom-link {
+    position: fixed;
+    bottom: 0.9rem;
+    z-index: 2;
+    color: var(--fg);
+    font-size: 0.75rem;
+    text-decoration: none;
+    opacity: 0.6;
+  }
+  .bottom-link:hover {
+    opacity: 1;
+  }
+  #bsky-link { right: 1.1rem; }
+  #github-link { left: 1.1rem; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="label">Year Progress</div>
+  <div class="datetime" id="datetime">—</div>
+  <div class="progress-row">
+    <span class="percentage" id="percentage">···</span>
+    <span class="bar-text" id="bar"></span>
+  </div>
+</div>
+
+<a id="github-link" class="bottom-link" href="https://github.com/blu3Beetle" target="_blank" rel="noopener">github.com/blu3Beetle</a>
+<a id="bsky-link" class="bottom-link" href="https://bsky.app/profile/brainsauc3.bsky.social" target="_blank" rel="noopener">@brainsauc3.bsky.social</a>
+
+<script src="wasm_exec.js"></script>
+<script>
+  function ordinal(n) {
+    const suffixes = ["th", "st", "nd", "rd"];
+    const v = n % 100;
+    return n + (suffixes[(v - 20) % 10] || suffixes[v] || suffixes[0]);
+  }
+
+  const MONTHS = ["January", "February", "March", "April", "May", "June",
+                  "July", "August", "September", "October", "November", "December"];
+
+  function renderClock() {
+    const now = new Date();
+    const date = `${ordinal(now.getDate())} ${MONTHS[now.getMonth()]} ${now.getFullYear()}`;
+    const pad = (n, len = 2) => String(n).padStart(len, "0");
+    const time = `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}:${pad(now.getMilliseconds(), 3)}`;
+    document.getElementById("datetime").textContent = `${date}  ${time}`;
+  }
+
+  setInterval(renderClock, 47);
+  renderClock();
+
+  const go = new Go();
+  WebAssembly.instantiateStreaming(fetch("progress.wasm"), go.importObject)
+    .then((result) => {
+      go.run(result.instance);
+      const snap = computeProgress();
+      document.getElementById("percentage").textContent = snap.percentage + "%";
+      document.getElementById("bar").textContent = snap.bar;
+    })
+    .catch((err) => {
+      document.getElementById("percentage").textContent = "error";
+      console.error(err);
+    });
+</script>
+</body>
+</html>
