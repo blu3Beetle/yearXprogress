@@ -1,6 +1,5 @@
-// Command yearxprogress posts an hourly "% of the year elapsed" update to
-// social platforms. It is designed to run as a one-shot process triggered by
-// a GitHub Actions cron schedule rather than as a long-running server.
+// Command yearxprogress posts a year-progress update whenever the
+// percentage changes, run as a one-shot process on a GitHub Actions schedule.
 package main
 
 import (
@@ -14,8 +13,7 @@ import (
 	"github.com/blu3Beetle/yearXprogress/internal/state"
 )
 
-// target is one platform the bot posts to. Each is independent - a failure
-// on one target doesn't stop the others from being tried.
+// target is one platform the bot posts to.
 type target struct {
 	name string
 	post func(ctx context.Context, text string) (string, error)

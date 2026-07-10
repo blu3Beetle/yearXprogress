@@ -1,6 +1,4 @@
-// Package state persists the bot's last-posted year/percentage in a GitHub
-// Gist, so the workflow has somewhere to remember state between runs without
-// needing a database or committing bot activity into the project repo.
+// Package state persists the bot's last-posted year/percentage in a GitHub Gist.
 package state
 
 import (
@@ -17,14 +15,12 @@ const (
 	fileName = "state.json"
 )
 
-// State is the last percentage the bot posted, so it can dedupe repeat runs
-// within the same hour and detect year rollover.
+// State is the last percentage the bot posted.
 type State struct {
 	Year           int `json:"year"`
 	LastPercentage int `json:"lastPercentage"`
 }
 
-// Store reads and writes State to a single file inside a GitHub Gist.
 type Store struct {
 	Token  string
 	GistID string
@@ -41,8 +37,7 @@ type gistResponse struct {
 	} `json:"files"`
 }
 
-// Load fetches the current state. A gist with no state file yet (first run)
-// returns a zero-value State rather than an error.
+// Load returns a zero-value State, not an error, if state.json doesn't exist yet.
 func (s *Store) Load(ctx context.Context) (State, error) {
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, apiBase+"/"+s.GistID, nil)
 	if err != nil {
@@ -81,7 +76,6 @@ func (s *Store) Load(ctx context.Context) (State, error) {
 	return st, nil
 }
 
-// Save writes the given state back to the gist, overwriting state.json.
 func (s *Store) Save(ctx context.Context, st State) error {
 	content, err := json.Marshal(st)
 	if err != nil {

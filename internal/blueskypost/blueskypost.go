@@ -1,7 +1,6 @@
-// Package blueskypost posts a status update to Bluesky using the AT
-// Protocol. Auth is a simple handle + app password login that returns a
-// short-lived session token, used immediately and then discarded - there is
-// no long-lived token to store between runs.
+// Package blueskypost posts a status update to Bluesky via the AT Protocol.
+// Each run logs in fresh with a handle + app password; there's no long-lived
+// token to store between runs.
 package blueskypost
 
 import (
@@ -19,9 +18,8 @@ const (
 	createRecordURL  = "https://bsky.social/xrpc/com.atproto.repo.createRecord"
 )
 
-// Credentials are a Bluesky handle (e.g. "alice.bsky.social") and an app
-// password generated from Settings -> App Passwords - never the account's
-// real login password.
+// Credentials is a handle plus an app password (Settings -> App Passwords),
+// not the account's real login password.
 type Credentials struct {
 	Handle      string
 	AppPassword string
@@ -44,7 +42,6 @@ type postRecord struct {
 	CreatedAt string `json:"createdAt"`
 }
 
-// Post publishes text as a Bluesky post and returns the created record's URI.
 func Post(ctx context.Context, creds Credentials, text string) (string, error) {
 	session, err := login(ctx, creds)
 	if err != nil {

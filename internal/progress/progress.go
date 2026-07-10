@@ -1,5 +1,4 @@
-// Package progress computes how far the current year has progressed and
-// renders that as a text progress bar and post body.
+// Package progress computes year-progress and renders it as a bar + post body.
 package progress
 
 import (
@@ -22,7 +21,6 @@ type Snapshot struct {
 	Text       string
 }
 
-// Compute returns the year-progress snapshot for the given instant.
 func Compute(now time.Time) Snapshot {
 	year := now.Year()
 	daysInYear := time.Date(year, time.December, 31, 0, 0, 0, 0, now.Location()).YearDay()
