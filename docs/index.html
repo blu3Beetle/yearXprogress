@@ -147,12 +147,22 @@
   const MONTHS = ["January", "February", "March", "April", "May", "June",
                   "July", "August", "September", "October", "November", "December"];
 
+  function isLeapYear(year) {
+    return (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
+  }
+
+  function dayOfYear(now) {
+    const startOfYear = new Date(now.getFullYear(), 0, 0);
+    return Math.floor((now - startOfYear) / 86400000);
+  }
+
   function renderClock() {
     const now = new Date();
     const date = `${ordinal(now.getDate())} ${MONTHS[now.getMonth()]} ${now.getFullYear()}`;
     const pad = (n, len = 2) => String(n).padStart(len, "0");
     const time = `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}:${pad(now.getMilliseconds(), 3)}`;
     document.getElementById("datetime").textContent = `${date}  ${time}`;
+    document.getElementById("daycount").textContent = `${dayOfYear(now)}/${isLeapYear(now.getFullYear()) ? 366 : 365}`;
   }
 
   setInterval(renderClock, 47);
@@ -165,7 +175,6 @@
       const snap = computeProgress();
       document.getElementById("percentage").textContent = snap.percentage + "%";
       document.getElementById("bar").textContent = snap.bar;
-      document.getElementById("daycount").textContent = `${snap.dayOfYear}/${snap.daysInYear}`;
     })
     .catch((err) => {
       document.getElementById("percentage").textContent = "error";

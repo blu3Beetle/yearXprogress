@@ -17,8 +17,6 @@ const (
 type Snapshot struct {
 	Year       int
 	Percentage int // floor'd whole-number percentage, 0-100
-	DayOfYear  int
-	DaysInYear int
 	Bar        string
 	Text       string
 }
@@ -26,9 +24,8 @@ type Snapshot struct {
 func Compute(now time.Time) Snapshot {
 	year := now.Year()
 	daysInYear := time.Date(year, time.December, 31, 0, 0, 0, 0, now.Location()).YearDay()
-	dayOfYear := now.YearDay()
 
-	pct := float64(dayOfYear) / float64(daysInYear) * 100
+	pct := float64(now.YearDay()) / float64(daysInYear) * 100
 	whole := int(pct)
 
 	bar := renderBar(pct)
@@ -37,8 +34,6 @@ func Compute(now time.Time) Snapshot {
 	return Snapshot{
 		Year:       year,
 		Percentage: whole,
-		DayOfYear:  dayOfYear,
-		DaysInYear: daysInYear,
 		Bar:        bar,
 		Text:       text,
 	}
