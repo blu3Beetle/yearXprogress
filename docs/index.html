@@ -9,8 +9,8 @@
   :root {
     color-scheme: dark light;
     --bg: #0b0b0d;
-    --fg: #f2f2f3;
-    --muted: #8a8a90;
+    --fg: #f5f5f6;
+    --muted: #98989e;
     --card-bg: #18181c;
     --dot: #232327;
     --card-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
@@ -18,8 +18,8 @@
   @media (prefers-color-scheme: light) {
     :root {
       --bg: #fafafa;
-      --fg: #16161a;
-      --muted: #6b6b70;
+      --fg: #121214;
+      --muted: #5c5c62;
       --card-bg: #eaeaec;
       --dot: #dcdce0;
       --card-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
@@ -49,28 +49,22 @@
     aspect-ratio: 18 / 9;
     background: var(--card-bg);
     border-radius: 28px;
-    padding: 1.5rem 2rem;
+    padding: 1.1rem 1.75rem;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     text-align: center;
-    gap: 1rem;
+    gap: 0.6rem;
     box-shadow: var(--card-shadow);
     overflow: hidden;
   }
   .label {
     color: var(--muted);
-    font-size: 0.7rem;
-    font-weight: 600;
-    letter-spacing: 0.22em;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.24em;
     text-transform: uppercase;
-  }
-  .datetime {
-    font-size: 0.8rem;
-    color: var(--muted);
-    font-variant-numeric: tabular-nums;
-    letter-spacing: 0.02em;
   }
   .progress-row {
     display: flex;
@@ -79,12 +73,13 @@
     max-width: 100%;
   }
   .percentage {
-    font-size: clamp(2.1rem, 9vw, 3.75rem);
-    font-weight: 700;
+    font-size: clamp(1.9rem, 8vw, 3.5rem);
+    font-weight: 800;
     line-height: 1;
     letter-spacing: -0.02em;
     font-variant-numeric: tabular-nums;
     flex-shrink: 0;
+    color: var(--fg);
   }
   .bar-text {
     font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
@@ -94,6 +89,22 @@
     min-width: 0;
     overflow: hidden;
     white-space: nowrap;
+  }
+  .day-count {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    color: var(--muted);
+    font-weight: 600;
+    font-size: clamp(0.72rem, 2.8vw, 0.95rem);
+    letter-spacing: 0.03em;
+    font-variant-numeric: tabular-nums;
+  }
+  .datetime {
+    font-size: clamp(0.6rem, 2vw, 0.72rem);
+    font-weight: 400;
+    color: var(--muted);
+    opacity: 0.75;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.02em;
   }
   .bottom-link {
     position: fixed;
@@ -114,11 +125,12 @@
 <body>
 <div class="card">
   <div class="label">Year Progress</div>
-  <div class="datetime" id="datetime">—</div>
   <div class="progress-row">
     <span class="percentage" id="percentage">···</span>
     <span class="bar-text" id="bar"></span>
   </div>
+  <div class="day-count" id="daycount">—</div>
+  <div class="datetime" id="datetime">—</div>
 </div>
 
 <a id="github-link" class="bottom-link" href="https://github.com/blu3Beetle" target="_blank" rel="noopener">github.com/blu3Beetle</a>
@@ -153,6 +165,7 @@
       const snap = computeProgress();
       document.getElementById("percentage").textContent = snap.percentage + "%";
       document.getElementById("bar").textContent = snap.bar;
+      document.getElementById("daycount").textContent = `${snap.dayOfYear}/${snap.daysInYear}`;
     })
     .catch((err) => {
       document.getElementById("percentage").textContent = "error";

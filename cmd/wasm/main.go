@@ -18,6 +18,8 @@ func computeProgress(this js.Value, args []js.Value) any {
 	result := js.Global().Get("Object").New()
 	result.Set("year", snap.Year)
 	result.Set("percentage", snap.Percentage)
+	result.Set("dayOfYear", snap.DayOfYear)
+	result.Set("daysInYear", snap.DaysInYear)
 	result.Set("bar", snap.Bar)
 	result.Set("text", snap.Text)
 	return result
