@@ -1,5 +1,7 @@
 # yearXprogress
 
+[![Post year progress](https://github.com/blu3Beetle/yearXprogress/actions/workflows/post.yml/badge.svg)](https://github.com/blu3Beetle/yearXprogress/actions/workflows/post.yml)
+
 A bot that posts an update on how much of the year has passed:
 
 ```
